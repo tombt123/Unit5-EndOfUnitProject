@@ -1,9 +1,9 @@
-pandas
+pandas==3.0.5
 scikit-learn
 joblib
 mlflow
 dvc
-evidently
+evidently==0.7.23
 fastapi
 uvicorn
 httpx
