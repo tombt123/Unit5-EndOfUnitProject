@@ -1,0 +1,22 @@
+# DVC pipeline: `dvc repro` re-runs only the stages whose inputs changed.
+stages:
+  preprocess:
+    cmd: python -m src.preprocess
+    deps:
+      - data/raw/titanic.csv
+      - src/preprocess.py
+      - src/config.py
+    outs:
+      - data/processed/train.csv
+      - data/processed/test.csv
+  train:
+    cmd: python -m src.train
+    deps:
+      - data/processed/train.csv
+      - data/processed/test.csv
+      - src/train.py
+    outs:
+      - models/model.joblib
+    metrics:
+      - models/metrics.json:
+          cache: false

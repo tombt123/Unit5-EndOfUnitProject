@@ -1,0 +1,7 @@
+{
+  "data_source": "held-out test set (no or too few API logs yet)",
+  "drifted_share": 0.0,
+  "drifted_columns": 0,
+  "alert": false,
+  "threshold": 0.2
+}

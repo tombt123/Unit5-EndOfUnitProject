@@ -1,0 +1,49 @@
+name: ML pipeline (CI/CD)
+
+# Triggers: code changes, new data, a weekly retrain, or a manual click.
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "api/**", "monitoring/**", "data/raw/**", "tests/**", "requirements.txt"]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"      # every Monday 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  train-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      - name: Download dataset from Google Drive
+        run: python -m src.download_data
+
+      - name: Preprocess and train (logs to MLflow)
+        run: |
+          python -m src.preprocess
+          python -m src.train
+
+      - name: Run automated tests and quality gate
+        run: python -m pytest -q tests
+
+      - name: Generate Evidently monitoring reports
+        run: python -m monitoring.monitor
+
+      - name: Upload model and reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-and-reports
+          path: |
+            models/
+            monitoring/reports/
+
+      # Deployment step: build and (optionally) push a container image.
+      - name: Build Docker image
+        if: github.ref == 'refs/heads/main'
+        run: docker build -t risk-api:${{ github.sha }} .

@@ -1,0 +1,12 @@
+pandas
+scikit-learn
+joblib
+mlflow
+dvc
+evidently
+fastapi
+uvicorn
+httpx
+pytest
+GitPython
+gdown

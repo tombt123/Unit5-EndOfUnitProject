@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+mlflow.db
+mlruns/
+mlartifacts/
+.pytest_cache/
+monitoring/prediction_log.csv
+# Tracked by DVC instead of git:
+/data/raw/titanic.csv
+/data/processed
+/models/model.joblib
